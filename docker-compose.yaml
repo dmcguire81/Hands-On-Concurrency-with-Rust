@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+
+  rust:
+    build: .
+    volumes:
+      - .:/rust-concurrency:delegated
+      - ~/.gitconfig:/root/.gitconfig:delegated
+      - ~/.config/gcloud:/root/.config/gcloud
+      - ~/.ssh:/root/.ssh
+      - ~/.git-credentials:/root/.git-credentials
+      - vscode_server:/root/.vscode-server
+    working_dir: /rust-concurrency
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_PTRACE
+
+volumes:
+  vscode_server:
