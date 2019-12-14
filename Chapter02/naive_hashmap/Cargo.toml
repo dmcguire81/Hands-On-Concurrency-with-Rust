@@ -18,11 +18,15 @@ name = "naive_interpreter"
 doc = false
 
 [[bin]]
-name = "standard"
+name = "naive"
 doc = false
 
+[[bench]]
+name = "standard"
+harness = false
+
 [[bin]]
-name = "naive"
+name = "standard"
 doc = false
 
 [[bench]]
