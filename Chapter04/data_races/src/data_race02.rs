@@ -76,7 +76,7 @@ fn reader(read_limit: usize, ring_lk: Arc<Mutex<Ring>>) -> () {
 
 fn main() {
     let capacity = 10;
-    let read_limit = 1_000_000;
+    let read_limit = 100_000;
     let ring = Arc::new(Mutex::new(Ring::with_capacity(capacity)));
 
     let reader_ring = Arc::clone(&ring);

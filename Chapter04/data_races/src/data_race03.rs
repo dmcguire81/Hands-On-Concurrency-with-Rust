@@ -19,7 +19,7 @@ fn reader(read_limit: usize, chan: mpsc::Receiver<u32>) -> () {
 
 fn main() {
     let capacity = 10;
-    let read_limit = 1_000_000;
+    let read_limit = 100_000;
     let (snd, rcv) = mpsc::sync_channel(capacity);
 
     let reader_jh = thread::spawn(move || {
