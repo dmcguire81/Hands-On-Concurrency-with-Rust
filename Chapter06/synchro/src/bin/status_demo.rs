@@ -21,7 +21,7 @@ fn worker(id: usize, gate: Arc<Semaphore>) {
 }
 
 fn main() {
-    let semaphore = Arc::new(Semaphore::new(1));
+    let semaphore = Arc::new(Semaphore::new(2));
 
     for i in 0..THRS {
         let semaphore = Arc::clone(&semaphore);
