@@ -8,6 +8,7 @@ apt-get install -y lldb gdb valgrind
 # https://www.raspberrypi.org/products/raspberry-pi-3-model-b-plus/
 apt-get install -y gcc-arm-linux-gnueabihf
 rustup target add armv7-unknown-linux-gnueabihf
+rustup component add rustfmt
 
 cat << CONFIG > ${CARGO_HOME}/config
 [target.armv7-unknown-linux-gnueabihf]
