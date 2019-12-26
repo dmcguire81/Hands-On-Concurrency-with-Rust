@@ -1,14 +1,14 @@
 extern crate synchro;
 
 use std::sync::Arc;
-use synchro::Semaphore;
 use std::{thread, time};
+use synchro::Semaphore;
 
 const THRS: usize = 4;
-static mut COUNTS: &'static mut [u64] = &mut [0; THRS];
-static mut STATUS: &'static mut [bool] = &mut [false; THRS];
+static mut COUNTS: &mut [u64] = &mut [0; THRS];
+static mut STATUS: &mut [bool] = &mut [false; THRS];
 
-fn worker(id: usize, gate: Arc<Semaphore>) -> () {
+fn worker(id: usize, gate: Arc<Semaphore>) {
     unsafe {
         loop {
             gate.wait();

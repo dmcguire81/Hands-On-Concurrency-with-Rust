@@ -1,7 +1,7 @@
 extern crate synchro;
 
-use synchro::Queue;
 use std::thread;
+use synchro::Queue;
 
 fn main() {
     let q = Queue::new();

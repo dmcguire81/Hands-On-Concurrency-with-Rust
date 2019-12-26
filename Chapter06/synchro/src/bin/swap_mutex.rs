@@ -2,8 +2,8 @@ extern crate synchro;
 
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
-use synchro::SwapMutex;
 use std::{thread, time};
+use synchro::SwapMutex;
 
 #[derive(Debug)]
 enum Bridge {
@@ -15,7 +15,7 @@ enum Bridge {
 static LHS_TRANSFERS: AtomicUsize = AtomicUsize::new(0);
 static RHS_TRANSFERS: AtomicUsize = AtomicUsize::new(0);
 
-fn lhs(rope: Arc<SwapMutex<Bridge>>) -> () {
+fn lhs(rope: Arc<SwapMutex<Bridge>>) {
     loop {
         let mut guard = rope.lock();
         match *guard {
@@ -38,7 +38,7 @@ fn lhs(rope: Arc<SwapMutex<Bridge>>) -> () {
     }
 }
 
-fn rhs(rope: Arc<SwapMutex<Bridge>>) -> () {
+fn rhs(rope: Arc<SwapMutex<Bridge>>) {
     loop {
         let mut guard = rope.lock();
         match *guard {

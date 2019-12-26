@@ -16,11 +16,11 @@ impl Semaphore {
         Semaphore { capacity: q }
     }
 
-    pub fn wait(&self) -> () {
+    pub fn wait(&self) {
         self.capacity.pop();
     }
 
-    pub fn signal(&self) -> () {
+    pub fn signal(&self) {
         self.capacity.push(());
     }
 }

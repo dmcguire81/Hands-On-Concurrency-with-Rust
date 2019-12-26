@@ -1,6 +1,6 @@
 use std::ops::{Deref, DerefMut};
-use std::thread;
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::thread;
 
 unsafe impl<T: Send> Send for SwapMutex<T> {}
 unsafe impl<T: Send> Sync for SwapMutex<T> {}
@@ -26,8 +26,8 @@ impl<T> SwapMutex<T> {
         SwapMutexGuard::new(self)
     }
 
-    fn unlock(&self) -> () {
-        assert!(self.locked.load(Ordering::Relaxed) == true);
+    fn unlock(&self) {
+        assert!(self.locked.load(Ordering::Relaxed));
         self.locked.store(false, Ordering::Release);
     }
 }

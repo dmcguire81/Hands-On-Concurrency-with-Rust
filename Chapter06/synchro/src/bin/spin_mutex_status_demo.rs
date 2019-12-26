@@ -1,14 +1,14 @@
 extern crate synchro;
 
-use synchro::SwapMutex;
 use std::sync::Arc;
 use std::{thread, time};
+use synchro::SwapMutex;
 
 const THRS: usize = 4;
-static mut COUNTS: &'static mut [u64] = &mut [0; THRS];
-static mut STATUS: &'static mut [bool] = &mut [false; THRS];
+static mut COUNTS: &mut [u64] = &mut [0; THRS];
+static mut STATUS: &mut [bool] = &mut [false; THRS];
 
-fn worker(id: usize, gate: Arc<SwapMutex<()>>) -> () {
+fn worker(id: usize, gate: Arc<SwapMutex<()>>) {
     unsafe {
         loop {
             let guard = gate.lock();

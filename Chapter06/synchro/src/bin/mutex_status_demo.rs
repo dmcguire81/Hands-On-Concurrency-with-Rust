@@ -2,10 +2,10 @@ use std::sync::{Arc, Mutex};
 use std::{thread, time};
 
 const THRS: usize = 4;
-static mut COUNTS: &'static mut [u64] = &mut [0; THRS];
-static mut STATUS: &'static mut [bool] = &mut [false; THRS];
+static mut COUNTS: &mut [u64] = &mut [0; THRS];
+static mut STATUS: &mut [bool] = &mut [false; THRS];
 
-fn worker(id: usize, gate: Arc<Mutex<()>>) -> () {
+fn worker(id: usize, gate: Arc<Mutex<()>>) {
     unsafe {
         loop {
             let guard = gate.lock().unwrap();

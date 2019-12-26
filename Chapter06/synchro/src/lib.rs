@@ -1,9 +1,9 @@
 extern crate crossbeam;
 
 mod queue;
-mod swap_mutex;
 mod semaphore;
+mod swap_mutex;
 
+pub use queue::*;
 pub use semaphore::*;
 pub use swap_mutex::*;
-pub use queue::*;

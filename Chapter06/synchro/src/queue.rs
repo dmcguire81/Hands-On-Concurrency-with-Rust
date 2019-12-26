@@ -41,7 +41,7 @@ impl<T> InnerQueue<T> {
         }
     }
 
-    pub unsafe fn enq(&mut self, val: T) -> () {
+    pub unsafe fn enq(&mut self, val: T) {
         let node = Box::new(Node::new(val));
         let node: *mut Node<T> = Box::into_raw(node);
 
@@ -49,11 +49,11 @@ impl<T> InnerQueue<T> {
             let tail: *mut Node<T> = self.tail.load(Ordering::Acquire);
             let next: *mut Node<T> = (*tail).next.load(Ordering::Relaxed);
             if tail == self.tail.load(Ordering::Relaxed) {
-                if next.is_null() {
-                    if (*tail).next.compare_and_swap(next, node, Ordering::Relaxed) == next {
-                        self.tail.compare_and_swap(tail, node, Ordering::Release);
-                        return;
-                    }
+                if next.is_null()
+                    && (*tail).next.compare_and_swap(next, node, Ordering::Relaxed) == next
+                {
+                    self.tail.compare_and_swap(tail, node, Ordering::Release);
+                    return;
                 }
             } else {
                 self.tail.compare_and_swap(tail, next, Ordering::Release);
@@ -99,6 +99,12 @@ impl<T> Clone for Queue<T> {
     }
 }
 
+impl<T> Default for Queue<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> Queue<T> {
     pub fn new() -> Self {
         Queue {
@@ -106,7 +112,7 @@ impl<T> Queue<T> {
         }
     }
 
-    pub fn enq(&self, val: T) -> () {
+    pub fn enq(&self, val: T) {
         unsafe { (*self.inner).enq(val) }
     }
 
@@ -119,12 +125,12 @@ impl<T> Queue<T> {
 mod test {
     extern crate quickcheck;
 
+    use self::quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
     use super::*;
     use std::collections::VecDeque;
     use std::sync::atomic::AtomicUsize;
-    use std::thread;
     use std::sync::Arc;
-    use self::quickcheck::{Arbitrary, Gen, QuickCheck, TestResult};
+    use std::thread;
 
     #[derive(Clone, Debug)]
     enum Op {
@@ -174,7 +180,7 @@ mod test {
 
         let mut ejhs = Vec::new();
         for _ in 0..enqs {
-            let mut q = q.clone();
+            let q = q.clone();
             ejhs.push(
                 thread::Builder::new()
                     .spawn(move || {
@@ -188,7 +194,7 @@ mod test {
 
         let mut djhs = Vec::new();
         for _ in 0..deqs {
-            let mut q = q.clone();
+            let q = q.clone();
             let total_retrieved = Arc::clone(&total_retrieved);
             djhs.push(
                 thread::Builder::new()
