@@ -45,8 +45,8 @@ impl OpCode {
         14
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
-        match *self {
+    pub fn serialize(self, w: &mut dyn Write) -> io::Result<usize> {
+        match self {
             OpCode::Dat => w.write(b"DAT"),
             OpCode::Mov => w.write(b"MOV"),
             OpCode::Add => w.write(b"ADD"),
@@ -90,8 +90,8 @@ impl Modifier {
         }
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
-        match *self {
+    pub fn serialize(self, w: &mut dyn Write) -> io::Result<usize> {
+        match self {
             Modifier::A => w.write(b"A"),
             Modifier::B => w.write(b"B"),
             Modifier::AB => w.write(b"AB"),
@@ -144,7 +144,7 @@ impl Offset {
         Offset { offset }
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
+    pub fn serialize(self, w: &mut dyn Write) -> io::Result<usize> {
         w.write(format!("{}", self.offset).as_bytes())
     }
 }
@@ -171,7 +171,7 @@ impl Instruction {
         }
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
+    pub fn serialize(self, w: &mut dyn Write) -> io::Result<usize> {
         let mut total_written = 0;
         self.opcode.serialize(w)?;
         total_written += w.write(b".")?;

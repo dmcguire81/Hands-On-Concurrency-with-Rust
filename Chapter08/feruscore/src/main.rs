@@ -36,7 +36,7 @@ enum State {
     Mutate,
 }
 
-fn report() -> () {
+fn report() {
     let delay_millis = 1_000;
     let delay = time::Duration::from_millis(delay_millis);
     let adjustment = (delay_millis / 1000) as usize;
@@ -50,8 +50,8 @@ fn report() -> () {
         let generation = GENERATIONS.load(Ordering::Relaxed);
         if generation > last_gens {
             total_parents = 0;
-            for i in 0..10 {
-                fitness[i] = 0;
+            for f in &mut fitness {
+                *f = 0;
             }
             total_battles = 0;
         }
@@ -220,7 +220,7 @@ fn main() {
         // mutation
         STATE.store(2, Ordering::Release);
         population.par_iter_mut().for_each(|indv| {
-            let _ = indv.mutate(GENE_MUTATION_CHANCE, CORE_SIZE);
+            indv.mutate(GENE_MUTATION_CHANCE, CORE_SIZE);
         });
 
         let generation = GENERATIONS.fetch_add(1, Ordering::Relaxed);

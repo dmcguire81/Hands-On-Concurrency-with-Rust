@@ -32,20 +32,20 @@ pub enum Winner {
     Tie,
 }
 
-fn tally_fitness(score: usize) -> () {
+fn tally_fitness(score: usize) {
     assert!(score <= ROUNDS);
 
     match score {
-        0...10 => FITNESS_00010.fetch_add(1, Ordering::Relaxed),
-        11...20 => FITNESS_11020.fetch_add(1, Ordering::Relaxed),
-        21...30 => FITNESS_21030.fetch_add(1, Ordering::Relaxed),
-        31...40 => FITNESS_31040.fetch_add(1, Ordering::Relaxed),
-        41...50 => FITNESS_41050.fetch_add(1, Ordering::Relaxed),
-        51...60 => FITNESS_51060.fetch_add(1, Ordering::Relaxed),
-        61...70 => FITNESS_61070.fetch_add(1, Ordering::Relaxed),
-        71...80 => FITNESS_71080.fetch_add(1, Ordering::Relaxed),
-        81...90 => FITNESS_81090.fetch_add(1, Ordering::Relaxed),
-        91...100 => FITNESS_91100.fetch_add(1, Ordering::Relaxed),
+        0..=10 => FITNESS_00010.fetch_add(1, Ordering::Relaxed),
+        11..=20 => FITNESS_11020.fetch_add(1, Ordering::Relaxed),
+        21..=30 => FITNESS_21030.fetch_add(1, Ordering::Relaxed),
+        31..=40 => FITNESS_31040.fetch_add(1, Ordering::Relaxed),
+        41..=50 => FITNESS_41050.fetch_add(1, Ordering::Relaxed),
+        51..=60 => FITNESS_51060.fetch_add(1, Ordering::Relaxed),
+        61..=70 => FITNESS_61070.fetch_add(1, Ordering::Relaxed),
+        71..=80 => FITNESS_71080.fetch_add(1, Ordering::Relaxed),
+        81..=90 => FITNESS_81090.fetch_add(1, Ordering::Relaxed),
+        91..=100 => FITNESS_91100.fetch_add(1, Ordering::Relaxed),
         _ => unreachable!(),
     };
 }
@@ -63,7 +63,7 @@ impl Individual {
         Individual { chromosome }
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
+    pub fn serialize(&self, w: &mut dyn Write) -> io::Result<usize> {
         let mut total_wrote = 0;
         for inst in &self.chromosome {
             if let Some(inst) = inst {
@@ -75,7 +75,7 @@ impl Individual {
         Ok(total_wrote)
     }
 
-    pub fn mutate(&mut self, mutation_chance: u32, core_size: u16) -> () {
+    pub fn mutate(&mut self, mutation_chance: u32, core_size: u16) {
         self.chromosome.par_iter_mut().for_each(|gene| {
             if thread_rng().gen_weighted_bool(mutation_chance) {
                 *gene = if thread_rng().gen::<bool>() {
@@ -87,7 +87,7 @@ impl Individual {
         });
     }
 
-    pub fn reproduce(&self, partner: &Individual, child: &mut Individual) -> () {
+    pub fn reproduce(&self, partner: &Individual, child: &mut Individual) {
         for (idx, (lgene, rgene)) in self.chromosome
             .iter()
             .zip(partner.chromosome.iter())
