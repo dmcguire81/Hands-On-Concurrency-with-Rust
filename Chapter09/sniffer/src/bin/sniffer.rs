@@ -24,7 +24,7 @@ enum Payload {
     Pulse(u64),
 }
 
-fn watch_interface(mut rx: Box<DataLinkReceiver>, snd: mpsc::SyncSender<Payload>) {
+fn watch_interface(mut rx: Box<dyn DataLinkReceiver>, snd: mpsc::SyncSender<Payload>) {
     loop {
         match rx.next() {
             Ok(packet) => {
@@ -46,8 +46,8 @@ fn watch_interface(mut rx: Box<DataLinkReceiver>, snd: mpsc::SyncSender<Payload>
     }
 }
 
-fn timer(snd: mpsc::SyncSender<Payload>) -> () {
-    use std::{thread, time};
+fn timer(snd: mpsc::SyncSender<Payload>) {
+    use std::time;
     let one_second = time::Duration::from_millis(1000);
 
     let mut pulses = 0;
@@ -80,8 +80,7 @@ fn main() {
     let interfaces = datalink::interfaces();
     let interface = interfaces
         .into_iter()
-        .filter(interface_names_match)
-        .next()
+        .find(interface_names_match)
         .unwrap();
 
     let lua = Lua::new();
