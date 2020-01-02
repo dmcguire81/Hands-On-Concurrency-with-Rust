@@ -22,7 +22,7 @@ const ROUNDS: u16 = 100;
 // reporting
 static GENERATIONS: AtomicUsize = AtomicUsize::new(0);
 
-fn report() -> () {
+fn report() {
     let delay_millis = 1_000;
     let delay = time::Duration::from_millis(delay_millis);
     let adjustment = (delay_millis / 1000) as usize;
@@ -75,7 +75,7 @@ fn report() -> () {
     }
 }
 
-fn checkpoint(generation: usize, best: &Vec<Individual>) -> io::Result<()> {
+fn checkpoint(generation: usize, best: &[Individual]) -> io::Result<()> {
     let root: PathBuf = Path::new("/tmp/feruscore/checkpoints").join(format!("{:04}", generation));
     DirBuilder::new().recursive(true).create(&root)?;
     assert!(fs::metadata(&root).unwrap().is_dir());
@@ -115,7 +115,7 @@ fn island(
     recv: mpsc::Receiver<Vec<Individual>>,
     snd: mpsc::SyncSender<Vec<Individual>>,
     total_children: usize,
-) -> () {
+) {
     let mut mars = MarsBuilder::default().core_size(CORE_SIZE).freeze();
 
     while let Ok(mut population) = recv.recv() {
@@ -159,7 +159,6 @@ fn main() {
         let (in_snd, in_rcv) = mpsc::sync_channel(1);
         let (out_snd, out_rcv) = mpsc::sync_channel(1);
         let mut population: Vec<Individual> = (0..thr_portion)
-            .into_iter()
             .map(|_| Individual::new(CHROMOSOME_SIZE))
             .collect();
         population.pop();

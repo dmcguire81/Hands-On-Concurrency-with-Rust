@@ -18,23 +18,23 @@ pub static FITNESS_91100: AtomicUsize = AtomicUsize::new(0);
 
 pub static BATTLES: AtomicUsize = AtomicUsize::new(0);
 
-fn tally_fitness(wins: Winner) -> () {
+fn tally_fitness(wins: Winner) {
     let score = match wins {
         Winner::Tie => 0,
         Winner::Right(x) => x,
         Winner::Left(x) => x,
     };
     match score {
-        0...10 => FITNESS_00010.fetch_add(1, Ordering::Relaxed),
-        11...20 => FITNESS_11020.fetch_add(1, Ordering::Relaxed),
-        21...30 => FITNESS_21030.fetch_add(1, Ordering::Relaxed),
-        31...40 => FITNESS_31040.fetch_add(1, Ordering::Relaxed),
-        41...50 => FITNESS_41050.fetch_add(1, Ordering::Relaxed),
-        51...60 => FITNESS_51060.fetch_add(1, Ordering::Relaxed),
-        61...70 => FITNESS_61070.fetch_add(1, Ordering::Relaxed),
-        71...80 => FITNESS_71080.fetch_add(1, Ordering::Relaxed),
-        81...90 => FITNESS_81090.fetch_add(1, Ordering::Relaxed),
-        91...100 => FITNESS_91100.fetch_add(1, Ordering::Relaxed),
+        0..=10 => FITNESS_00010.fetch_add(1, Ordering::Relaxed),
+        11..=20 => FITNESS_11020.fetch_add(1, Ordering::Relaxed),
+        21..=30 => FITNESS_21030.fetch_add(1, Ordering::Relaxed),
+        31..=40 => FITNESS_31040.fetch_add(1, Ordering::Relaxed),
+        41..=50 => FITNESS_41050.fetch_add(1, Ordering::Relaxed),
+        51..=60 => FITNESS_51060.fetch_add(1, Ordering::Relaxed),
+        61..=70 => FITNESS_61070.fetch_add(1, Ordering::Relaxed),
+        71..=80 => FITNESS_71080.fetch_add(1, Ordering::Relaxed),
+        81..=90 => FITNESS_81090.fetch_add(1, Ordering::Relaxed),
+        91..=100 => FITNESS_91100.fetch_add(1, Ordering::Relaxed),
         _ => unreachable!(),
     };
 }

@@ -7,6 +7,7 @@ use std::mem;
 pub mod ringers;
 
 #[derive(Debug)]
+#[derive(Default)]
 pub struct IndividualBuilder {
     chromosome: Vec<Instruction>,
     start: usize,
@@ -49,7 +50,7 @@ impl IndividualBuilder {
         mem::forget(chromosome);
         Individual {
             chromosome: chromosome_ptr,
-            len: len,
+            len,
         }
     }
 }
@@ -134,6 +135,10 @@ impl Individual {
         self.len as usize
     }
 
+    pub fn is_empty(&self) -> bool {
+        self.len == 0
+    }
+
     pub fn iter(&self) -> Iter {
         Iter {
             cur: 0,
@@ -152,7 +157,7 @@ impl Individual {
         }
     }
 
-    pub fn mutate(&mut self, mutation_chance: u32) -> () {
+    pub fn mutate(&mut self, mutation_chance: u32) {
         self.iter_mut().for_each(|gene| {
             if thread_rng().gen_weighted_bool(mutation_chance) {
                 *gene = thread_rng().gen::<Instruction>();
@@ -176,7 +181,7 @@ impl Individual {
         (self.len, self.chromosome)
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
+    pub fn serialize(&self, w: &mut dyn Write) -> io::Result<usize> {
         let mut total_wrote = 0;
         for inst in self.iter() {
             total_wrote += inst.serialize(w)?;

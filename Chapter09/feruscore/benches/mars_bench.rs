@@ -6,7 +6,7 @@ use criterion::Criterion;
 use feruscore::individual::*;
 use feruscore::mars::*;
 
-fn bench_imp_and_dwarf(core_size: u16, rounds: u16) -> () {
+fn bench_imp_and_dwarf(core_size: u16, rounds: u16) {
     let mut mars = MarsBuilder::default().core_size(core_size).freeze();
     let imp = ringers::imp(core_size);
     let dwarf = ringers::dwarf(core_size);

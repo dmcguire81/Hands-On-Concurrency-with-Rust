@@ -186,13 +186,13 @@ impl Instruction {
         }
     }
 
-    pub fn start(&mut self) -> () {
+    pub fn start(&mut self) {
         let flag_no = Flag::Start as u16;
         self.ins &= !FLAG_MASK;
         self.ins |= flag_no << FLAG_MASK.trailing_zeros();
     }
 
-    pub fn serialize(&self, w: &mut Write) -> io::Result<usize> {
+    pub fn serialize(self, w: &mut dyn Write) -> io::Result<usize> {
         let mut total_written = 0;
         total_written += match self.opcode() {
             OpCode::Dat => w.write(b"DAT")?,
@@ -244,7 +244,7 @@ impl Instruction {
         Ok(total_written)
     }
 
-    pub fn a_mode(&self) -> Mode {
+    pub fn a_mode(self) -> Mode {
         let shift: u32 = AMODE_MASK.trailing_zeros();
         let mode_no = (self.ins & AMODE_MASK) >> shift;
         match mode_no {
@@ -258,7 +258,7 @@ impl Instruction {
         }
     }
 
-    pub fn b_mode(&self) -> Mode {
+    pub fn b_mode(self) -> Mode {
         let shift: u32 = BMODE_MASK.trailing_zeros();
         let mode_no = (self.ins & BMODE_MASK) >> shift;
         match mode_no {
@@ -271,15 +271,15 @@ impl Instruction {
         }
     }
 
-    pub fn a(&self) -> u16 {
+    pub fn a(self) -> u16 {
         self.a
     }
 
-    pub fn b(&self) -> u16 {
+    pub fn b(self) -> u16 {
         self.b
     }
 
-    pub fn modifier(&self) -> Modifier {
+    pub fn modifier(self) -> Modifier {
         let shift: u32 = MODIFIER_MASK.trailing_zeros();
         let modifier_no = (self.ins & MODIFIER_MASK) >> shift;
         match modifier_no {
@@ -294,7 +294,7 @@ impl Instruction {
         }
     }
 
-    pub fn opcode(&self) -> OpCode {
+    pub fn opcode(self) -> OpCode {
         let shift: u32 = OP_CODE_MASK.trailing_zeros();
         let opcode_no = (self.ins & OP_CODE_MASK) >> shift;
         match opcode_no {
@@ -445,31 +445,24 @@ pub mod test {
             let max = 100;
             Application {
                 orders: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| ApplyOrder::arbitrary(g))
                     .collect(),
                 a: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| i8::arbitrary(g))
                     .collect(),
                 b: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| i8::arbitrary(g))
                     .collect(),
                 a_mode: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| Mode::arbitrary(g))
                     .collect(),
                 b_mode: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| Mode::arbitrary(g))
                     .collect(),
                 modifier: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| Modifier::arbitrary(g))
                     .collect(),
                 opcode: (0..g.gen_range(0, max))
-                    .into_iter()
                     .map(|_| OpCode::arbitrary(g))
                     .collect(),
             }
